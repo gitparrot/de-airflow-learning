@@ -1,6 +1,6 @@
 # First-time build can take upto 10 mins.
 
-FROM apache/airflow:2.8.0
+FROM apache/airflow:2.2.3
 
 ENV AIRFLOW_HOME=/opt/airflow
 
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 
-ARG CLOUD_SDK_VERSION=458.0.1
+ARG CLOUD_SDK_VERSION=322.0.0
 ENV GCLOUD_HOME=/home/google-cloud-sdk
 
 ENV PATH="${GCLOUD_HOME}/bin/:${PATH}"
