@@ -8,6 +8,7 @@ from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
+import pyarrow as pa
 import pyarrow.csv as pv
 import pyarrow.parquet as pq
 import gzip
@@ -31,11 +32,23 @@ BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'ny_taxi')
 #     pq.write_table(table, src_file.replace('.csv', '.parquet'))
 
 def format_to_parquet(src_file):
-    if not src_file.endswith('.csv.gz'):
-        logging.error("Can only accept source files in CSV.gz format, for the moment")
-        return
-    table = pd.read_csv(src_file)
-    pq.write_table(table, src_file.replace('.csv.gz', '.parquet')) 
+    try:
+        if not src_file.endswith('.csv.gz'):
+            logging.error("Can only accept source files in CSV.gz format, for the moment")
+            return
+        logging.info(f"Reading {src_file} into DataFrame")
+        df = pd.read_csv(src_file)
+        logging.info("DataFrame read successfully, converting to Parquet")
+
+        # Convert the Pandas DataFrame to a PyArrow Table
+        table = pa.Table.from_pandas(df)
+
+        # Write the PyArrow Table to a Parquet file
+        pq.write_table(table, src_file.replace('.csv.gz', '.parquet'))
+        logging.info("Conversion to Parquet completed")
+    except Exception as e:
+        logging.error(f"Error during format_to_parquet: {e}\n{traceback.format_exc()}")
+        raise
 
 
 
