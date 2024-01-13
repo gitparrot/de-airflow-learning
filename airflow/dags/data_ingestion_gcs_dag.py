@@ -20,7 +20,7 @@ BUCKET = os.environ.get("GCP_GCS_BUCKET")
 dataset_file = "yellow_tripdata_2021-01.csv.gz"
 dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/{dataset_file}"
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
-parquet_file = dataset_file.replace('.csv', '.parquet')
+parquet_file = dataset_file.replace('.csv.gz', '.parquet')
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'ny_taxi')
 
 

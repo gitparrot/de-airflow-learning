@@ -56,17 +56,19 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-    GOOGLE_APPLICATION_CREDENTIALS: ~/.google/credentials/google_credentials.json
-    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
+    GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?key_path=%2F.google%2Fcredentials%2Fgoogle_credentials.json&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&project=<project_id>&num_retries=5'
     GCP_PROJECT_ID: 'argon-tuner-410118'
     GCP_GCS_BUCKET: "terraform-demo-terra-bucket-argon-tuner-410118"
 
   volumes:
-    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
-    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
-    - ${AIRFLOW_PROJ_DIR:-.}/datasets:/tmp/datasets
+  - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+  - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+  - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+  - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+  - ${AIRFLOW_PROJ_DIR:-.}/datasets:/tmp/datasets
+  - ~/.google/credentials/google_credentials.json:/.google/credentials/google_credentials.json:ro
+
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
